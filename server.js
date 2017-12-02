@@ -15,6 +15,9 @@ app.get('/',function(req,res){
     res.sendFile(__dirname+'/index.html');
 });
 
-server.listen(5000,function(){ // Listens to port 5000
+app.set('port', (process.env.PORT || 5000));
+
+
+server.listen(app.get('port'),function(){ // Listens to port 5000
     console.log('Listening on '+server.address().port);
 });
