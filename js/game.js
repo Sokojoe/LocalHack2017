@@ -1,19 +1,61 @@
-var game = new Phaser.Game(16*32, 600, Phaser.AUTO, document.getElementById('game'));
-game.state.add('Game',Game);
-game.state.start('Game');
-var Game = {};
+var game = new Phaser.Game(1600, 900, Phaser.AUTO, '', {
+  preload: preload, create: create, update: update
+});
 
-Game.init = function(){
-    game.stage.disableVisibilityChange = true;
+var player;
+
+var wKey;
+var aKey;
+var sKey;
+var dKey;
+
+function preload() {
+  game.load.image('background', 'assets/sky.png');
+  game.load.image('player', 'assets/star.png');
 };
 
-Game.preload = function() {
-    game.load.tilemap('map', 'assets/map/example_map.json', null, Phaser.Tilemap.TILED_JSON);
-    game.load.spritesheet('tileset', 'assets/map/tilesheet.png',32,32);
-    game.load.image('sprite','assets/sprites/sprite.png'); // this will be the sprite of the players
+function create() {
+  game.add.sprite(0, 0, 'background');
+  player = game.add.sprite(0,0, 'player');
 };
 
 Game.create = function(){
     layer.inputEnabled = true; // Allows clicking on the map
     Client.askNewPlayer();
 };
+
+function update() {
+  if (game.input.keyboard.isDown(Phaser.Keyboard.A))
+      {
+          moveLeft();
+      }
+      else if (game.input.keyboard.isDown(Phaser.Keyboard.D))
+      {
+          moveRight();
+      }
+
+      if (game.input.keyboard.isDown(Phaser.Keyboard.W))
+      {
+          moveUp();
+      }
+      else if (game.input.keyboard.isDown(Phaser.Keyboard.S))
+      {
+          moveDown();
+      }
+};
+
+function moveUp(){
+  player.y--;
+}
+
+function moveDown(){
+  player.y++;
+}
+
+function moveLeft(){
+  player.x--;
+}
+
+function moveRight(){
+  player.x++;
+}
