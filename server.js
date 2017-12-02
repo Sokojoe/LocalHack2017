@@ -25,7 +25,10 @@ server.listen(app.get('port'),function(){ // Listens to port 5000
 io.on('connection', (socket) => {
   console.log('Client connected');
   socket.on('disconnect', () => console.log('Client disconnected'));
-  socket.on('message', () => console.log("Player sent a message!"));
+  socket.on('message', function() {
+    console.log("Player sent a message!")
+    io.emit('message');
+  });
 });
 
 
