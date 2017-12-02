@@ -1,8 +1,13 @@
-var game = new Phaser.Game(1600, 900, Phaser.AUTO, '', {
-  preload: preload, create: create, update: update
+var gameAreax = 1200;
+var gameAreay = 1000;
+var game = new Phaser.Game(gameAreax, gameAreay, Phaser.AUTO, '', {
+  preload: preload, create: create, update: update, render: render
 });
+var player;
+var playerdiameter = 64;
 
 var player;
+var playerdiameter
 
 var wKey;
 var aKey;
@@ -15,8 +20,12 @@ function preload() {
 };
 
 function create() {
-  game.add.sprite(0, 0, 'background');
-  player = game.add.sprite(0,0, 'player');
+  player = new Phaser.Circle(
+    game.rnd.integerInRange(
+      0 + (playerdiameter/2),gameAreax-(playerdiameter/2)),
+      game.rnd.integerInRange(0+(playerdiameter/2),
+      gameAreay-(playerdiameter/2)),
+      playerdiameter);
 };
 
 Game.create = function(){
@@ -43,6 +52,10 @@ function update() {
           moveDown();
       }
 };
+
+function render(){
+  game.debug.geom(player,'#FFFFFF');
+}
 
 function moveUp(){
   player.y--;
