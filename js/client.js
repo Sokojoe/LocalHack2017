@@ -1,5 +1,6 @@
 
 var Client = {};
+
 Client.socket = io.connect();
 
 Client.sendTest = function(){
@@ -14,6 +15,15 @@ Client.askNewPlayer = function(){
 Client.sendClick = function(x,y){
   Client.socket.emit('click',{x:x,y:y});
 };
+
+Client.getcod = function() {
+    Client.socket.emit('currcod');
+};
+
+Client.socket.on('currcod', function(data) {
+    console.log('get cod from server')
+    Game.getKBCoordinates(data);
+});
 
 Client.socket.on('newplayer',function(data){
     Game.addNewPlayer(data.id,data.x,data.y);

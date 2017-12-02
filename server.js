@@ -26,6 +26,10 @@ io.on('connection',function(socket){
             y: randomInt(100,400)
         };
         socket.emit('allplayers',getAllPlayers());
+        socket.on('currcod', function() {
+            console.log('current coordinates'+socket.player.x+', '+socket.player.y);
+            io.emit('currcod',socket.player);
+        });
         socket.broadcast.emit('newplayer',socket.player);
 
         socket.on('click',function(data){
