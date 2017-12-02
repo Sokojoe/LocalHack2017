@@ -11,29 +11,49 @@ app.get('/',function(req,res){
     res.sendFile(__dirname+'/index.html');
 });
 
-app.get('/',function(req,res){
-    res.sendFile(__dirname+'/index.html');
-});
+server.lastPlayderID = 0;
 
-app.set('port', (process.env.PORT || 5000));
-
-server.listen(app.get('port'),function(){ // Listens to port 5000
+server.listen(process.env.PORT || 8081,function(){
     console.log('Listening on '+server.address().port);
 });
 
-// called when player joins the server
-io.on('connection', (socket) => {
-  console.log('Client connected');
-  socket.on('disconnect', function() {
-    console.log("A Player has disconnected");
-    io.emit('playerdisconnect');
-  });
-  socket.on('message', function() {
-    console.log("Player sent a message!")
-    io.emit('message');
-  });
+io.on('connection',function(socket){
+
+    socket.on('newplayer',function(){
+        socket.player = {
+            id: server.lastPlayderID++,
+            x: randomInt(100,400),
+            y: randomInt(100,400)
+        };
+        socket.emit('allplayers',getAllPlayers());
+        socket.broadcast.emit('newplayer',socket.player);
+
+        socket.on('click',function(data){
+            console.log('click to '+data.x+', '+data.y);
+            socket.player.x = data.x;
+            socket.player.y = data.y;
+            io.emit('move',socket.player);
+        });
+
+        socket.on('disconnect',function(){
+            io.emit('remove',socket.player.id);
+        });
+    });
+
+    socket.on('test',function(){
+        console.log('test received');
+    });
 });
 
+function getAllPlayers(){
+    var players = [];
+    Object.keys(io.sockets.connected).forEach(function(socketID){
+        var player = io.sockets.connected[socketID].player;
+        if(player) players.push(player);
+    });
+    return players;
+}
 
-
-// setInterval(() => io.emit('playerlocations', ), 125);
+function randomInt (low, high) {
+    return Math.floor(Math.random() * (high - low) + low);
+}
